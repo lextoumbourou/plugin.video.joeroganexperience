@@ -114,7 +114,6 @@ def pull_live_stream(url):
 		rtmp = match[0]
 	except:
 		return False
-		break
 
 	s_name = re.compile('.*streamName\W\W\W(.+?)[/]*\x00.*').findall(link)
 	playpath = ' playpath='+s_name[0]
