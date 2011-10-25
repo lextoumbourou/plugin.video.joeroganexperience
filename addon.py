@@ -1,6 +1,8 @@
 import urllib,urllib2,re,os
 import xbmcplugin,xbmcgui
 import ustream
+import joerogan
+import vimeo
 from BeautifulSoup import BeautifulSoup
 
 class Set:
@@ -18,7 +20,7 @@ class Set:
 	page_no = 1
 
 	# Set the params field to a list
-	params = []
+	params = {}
 	
 	# values default to none
 	url=None
@@ -37,53 +39,62 @@ class Set:
 
 		self.params = in_params
 
+		# Check if the url param exists
 		try:
 			self.url=urllib.unquote_plus(self.params["url"])
 		except:
 			pass
+		# Check if the name param exists
 		try:
 			self.name=urllib.unquote_plus(self.params["name"])
 		except:
 			pass
+		# Get the icon image
 		try:
 			self.iconimage=urllib.unquote_plus(self.params["iconimage"])
 		except:
 			pass
+		# Get the mode as a string
 		try:
-			self.mode=int(self.params["mode"])
+			self.mode=str(self.params["mode"])
 		except:
 			pass
-		# Check to see if the page version is set
+		# Check to see if the page version is set if not, set it to 1
 		try:
+			print "I've found the page_no param: " , int(self.params["page_no"])
 			self.page_no=int(self.params["page_no"])
 		except:
 			pass
 		
-		# If mode isn't set, then display the category choices
-		if self.mode==None or self.url==None or len(self.url)<1:
-			print ""
-			self.show_categories()
-
-		# If the mode is set to one, then get the live video 
-		elif self.mode==1:
-			print ""+self.url
-			self.show_categories()	
-
-		# If the mode is set to 2, then get the default video list
-		elif self.mode==2:
-			print ""+self.url
+		# If mode isn't set, then display default video list
+		if self.mode==None or self.mode=='list_videos':
 			video_list = {}
-			video_list = ustream.pull_video_list('http://www.ustream.tv/joerogan/videos', self.page_no)
+			video_list = joerogan.pull_video_list(self.page_no)
+			self.show_video_list(video_list)
+
+		# If the mode is set to video_list, then get the default video list
+		elif self.mode=='list_videos':
+			print self.url
+			video_list = {}
+			video_list = joerogan.pull_video_list(self.page_no)
 			self.show_video_list(video_list)
 			
-		# If the mode is set to 3, then get the MP4 file
-		elif self.mode==3:
+		# If the mode is set to play_video, then get the MP4 file
+		elif self.mode=='play_video':
 			print ""+self.url
-			video_to_play = ustream.pull_video_url(self.url)
+			# If the video is Vimeo (most likely) get the Vimeo URL
+			if re.search(r'vimeo', self.url):
+				video_to_play = vimeo.pull_video_url(self.url)
+			elif re.search(r'ustream', self.url):
+				video_to_play = ustream.pull_video_url(self.url)
+			elif re.search(r'youtube', self.url):
+				video_to_play = youtube.pull_video_url(self.url)
+			else:
+				video_to_play = self.url
 			self.play_vid(video_to_play)
 
 		# If the mode is set to 4, then get the Live Stream
-		elif self.mode==4:
+		elif self.mode=='live_stream':
 			print ""+self.url
 			live_video_to_play = ustream.pull_live_stream(self.url)
 
@@ -94,7 +105,7 @@ class Set:
 			else:
 				self.play_vid(live_video_to_play)
 	
-	def _add_directory(self, name, url, mode, icon):
+	def _add_directory(self, name, mode, icon):
 		"""
 		Displays list of videos as a directory listing
 
@@ -102,11 +113,13 @@ class Set:
 		@return void
 		"""
 
-		final_url = sys.argv[0] + "?url=" + urllib.quote_plus(url) + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name)
+		final_url = sys.argv[0] + "?mode=" + str(mode) + "&name=" + urllib.quote_plus(name)
 
 		if name == 'Next Page':
 			self.page_no += 1
 			final_url += "&page_no=" + str(self.page_no)
+
+		print "The final URL is " , final_url
 
 		list_item = xbmcgui.ListItem(name)
 		
@@ -130,35 +143,32 @@ class Set:
 		return xbmcplugin.addDirectoryItem(self.this_plugin, final_url, list_item)
 
 
-	def show_categories(self):
-		"""
-		Displays the list of categories you first see when you use the plugin
-		"""
+	#def show_categories(self):
+	#	"""
+	#	Displays the list of categories you first see'list_videos' when you use the plugin
+	#	"""
 
-		 # Mode 4 = Live Video
-		self._add_live_link('Live','http://cdngw.ustream.tv/Viewer/getStream/1/2399940.amf',4,'http://static-cdn1.ustream.tv/i/channel/picture/2/3/9/9/2399940/2399940_joerogan171008_450x366,90x90,r:1.jpg')
+	#	 # Mode 4 = Live Video
+	#	self._add_live_link('Live','http://cdngw.ustream.tv/Viewer/getStream/1/2399940.amf',4,'http://static-cdn1.ustream.tv/i/channel/picture/2/3/9/9/2399940/2399940_joerogan171008_450x366,90x90,r:1.jpg')
 
-		 # Mode 2 = Video Links
-		self._add_directory('Recorded Videos','http://www.ustream.tv/joerogan/videos',2,'http://static-cdn1.ustream.tv/i/channel/picture/2/3/9/9/2399940/2399940_joerogan171008_450x366,90x90,r:1.jpg')
+	#	 # Mode 2 = Video Links
+	#	self._add_directory('Recorded Videos','http://www.ustream.tv/joerogan/videos',2,'http://static-cdn1.ustream.tv/i/channel/picture/2/3/9/9/2399940/2399940_joerogan171008_450x366,90x90,r:1.jpg')
 
 		# We're done with the directory listing
-		xbmcplugin.endOfDirectory(self.this_plugin)
+		#xbmcplugin.endOfDirectory(self.this_plugin)
 
-	def show_video_list(self, match):
+	def show_video_list(self, matches):
 		"""
 		Shows a list of videos
 		@param dict match - a key -> value pair of lists
 		@return void
 		"""
 		# send each item to XBMC, mode 3 opens video
-		for index in range (len(match['name'])):
-			self._add_live_link(match['name'][index], 
-						  match['vid_url'][index],
-						  3,
-						  match['thumbnail'])
+		for index in range (len(matches['title'])):
+			self._add_live_link(matches['title'][index], matches['video_url'][index], 'play_video', matches['thumbnail'])
 		
 		# Lastly add a link to the Next Video
-		self._add_directory('Next Page', 'http://www.ustream.tv/joerogan/videos', 2, 'http://static-cdn1.ustream.tv/i/channel/picture/2/3/9/9/2399940/2399940_joerogan171008_450x366,90x90,r:1.jpg')
+		self._add_directory('Next Page', 'list_videos', 'http://static-cdn1.ustream.tv/i/channel/picture/2/3/9/9/2399940/2399940_joerogan171008_450x366,90x90,r:1.jpg')
 
 		# We're done with the directory listing
 		xbmcplugin.endOfDirectory(self.this_plugin)

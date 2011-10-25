@@ -66,7 +66,7 @@ def pull_video_url(url):
 	"""
 
 	# Gets the URL sent and adds uStream TV (in future this will check if it doesn't already have it
-	url = "http://www.ustream.tv" + str (url)
+	url = str (url)
 
 	# Build the page reuqest including setting the User Agent
 	req  = urllib2.Request(url)
