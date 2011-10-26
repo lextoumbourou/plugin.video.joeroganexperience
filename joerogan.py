@@ -99,23 +99,12 @@ def pull_video_list(page_no):
 		except:
 			pass
 
-	# Go through each title and get the text
-	#for title in soup.findAll("h4"):
-	#	match['name'].append(title.text)
-
-	## Go through each link with a shadowbox class (the image) and get the href
-	#for link in soup.findAll("a", "shadowbox"):
-	#	# With the URL, get the .mp4 file
-	#	match['vid_url'].append(link['href'])
-	#	
-	## Go through each img tag and get the source (thumbnail)
-	#for img in soup.findAll("img"):
-	#	match['thumbnail'].append(img['src'])
-
-	## Return the match dictionary
 	return matches
 
 def pull_podcast_mp3(div):
+	"""
+	Gets the audio link to the podcast if avaiable
+	"""
 	try:
 		url = div.find('div', 'podPress_content').find('div', 'podPress_downloadlinks').a['href']
 		return url

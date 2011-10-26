@@ -72,28 +72,20 @@ class Set:
 			video_list = joerogan.pull_video_list(self.page_no)
 			self.show_video_list(video_list)
 
-		# If the mode is set to video_list, then get the default video list
-		elif self.mode=='list_videos':
-			print self.url
-			video_list = {}
-			video_list = joerogan.pull_video_list(self.page_no)
-			self.show_video_list(video_list)
-			
 		# If the mode is set to play_video, then get the MP4 file
 		elif self.mode=='play_video':
-			print ""+self.url
 			# If the video is Vimeo (most likely) get the Vimeo URL
 			if re.search(r'vimeo', self.url):
 				video_to_play = vimeo.pull_video_url(self.url)
+			# If Ustream, the same
 			elif re.search(r'ustream', self.url):
 				video_to_play = ustream.pull_video_url(self.url)
-			elif re.search(r'youtube', self.url):
-				video_to_play = youtube.pull_video_url(self.url)
+			# If neither, assume audio and get nothing
 			else:
 				video_to_play = self.url
 			self.play_vid(video_to_play)
 
-		# If the mode is set to 4, then get the Live Stream
+		# If the mode is set to live_stream, then get the Live Stream
 		elif self.mode=='live_stream':
 			print ""+self.url
 			live_video_to_play = ustream.pull_live_stream(self.url)
@@ -143,20 +135,6 @@ class Set:
 		return xbmcplugin.addDirectoryItem(self.this_plugin, final_url, list_item)
 
 
-	#def show_categories(self):
-	#	"""
-	#	Displays the list of categories you first see'list_videos' when you use the plugin
-	#	"""
-
-	#	 # Mode 4 = Live Video
-	#	self._add_live_link('Live','http://cdngw.ustream.tv/Viewer/getStream/1/2399940.amf',4,'http://static-cdn1.ustream.tv/i/channel/picture/2/3/9/9/2399940/2399940_joerogan171008_450x366,90x90,r:1.jpg')
-
-	#	 # Mode 2 = Video Links
-	#	self._add_directory('Recorded Videos','http://www.ustream.tv/joerogan/videos',2,'http://static-cdn1.ustream.tv/i/channel/picture/2/3/9/9/2399940/2399940_joerogan171008_450x366,90x90,r:1.jpg')
-
-		# We're done with the directory listing
-		#xbmcplugin.endOfDirectory(self.this_plugin)
-
 	def show_video_list(self, matches):
 		"""
 		Shows a list of videos
@@ -199,7 +177,6 @@ def get_params():
 				cleanedparams=params.replace('?','')
 				# If the parameter before last is a slash
 				if (params[len(params)-1]=='/'):
-						# Erm...
 						params=params[0:len(params)-2]
 				# Create a list of parameters
 				pairsofparams=cleanedparams.split('&')
