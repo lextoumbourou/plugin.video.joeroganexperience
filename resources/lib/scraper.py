@@ -39,10 +39,10 @@ def get_video_id(content):
         html = data['response']['html']
         soup = BeautifulSoup(html)
         link = soup.find('a', 'podcast-video-container')
-        provider, id = link['data-video-provider'], link['data-video-id']
+        provider, vid_id = link['data-video-provider'], link['data-video-id']
         if not provider:
             audio_link = soup.find('a', 'download-episode')['href']
             provider = 'audio'
-            id = audio_link
+            vid_id = audio_link
 
-        return {'provider': provider, 'id': id}
+        return {'provider': provider, 'id': vid_id}
