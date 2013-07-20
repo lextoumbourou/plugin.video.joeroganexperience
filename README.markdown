@@ -1,4 +1,4 @@
-The Joe Rogan Experience XBMC Script
+The Joe Rogan Experience Plugin for XBMC
 =======================
 
 Watch The Joe Rogan Experience on XBMC
