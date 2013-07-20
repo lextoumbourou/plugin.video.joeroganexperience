@@ -15,7 +15,7 @@ def get(url):
 
 
 def get_podcasts(html):
-    """ Return a list of tuples like (name, url, thumbnail)"""
+    """ Return a list of tuples like (name, slug, thumbnail)"""
     output = []
 
     soup = BeautifulSoup(html)
