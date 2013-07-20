@@ -45,6 +45,4 @@ def get_video_id(content):
             provider = 'audio'
             id = audio_link
 
-        return {
-            'provider': provider,
-            'id': id}
+        return {'provider': provider, 'id': id}
