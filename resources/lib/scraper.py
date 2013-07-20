@@ -33,16 +33,17 @@ def get_podcasts(html):
 def get_video_id(content):
     """ Return a dictionary containing video information """
     data = json.loads(content)
+
     if 'response' in data:
         html = data['response']['html']
         soup = BeautifulSoup(html)
         link = soup.find('a', 'podcast-video-container')
-        return {
-            'provider': link['data-video-provider'],
-            'id': link['data-video-id']}
+        provider, id = link['data-video-provider'], link['data-video-id']
+        if not provider:
+            audio_link = soup.find('a', 'download-episode')['href']
+            provider = 'audio'
+            id = audio_link
 
-if __name__ == '__main__':
-    html = get("http://podcasts.joerogan.net/podcasts/page/2?load")
-    print get_podcasts(html)
-    content = get("http://podcasts.joerogan.net/wp-admin/admin-ajax.php?action=loadPermalink&slug=marc-maron")
-    print get_video_id(content)
+        return {
+            'provider': provider,
+            'id': id}

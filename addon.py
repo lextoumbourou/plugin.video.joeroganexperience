@@ -34,8 +34,11 @@ def play_podcast(slug):
     url = (
         'http://podcasts.joerogan.net/wp-admin/admin-ajax.php?action=loadPermalink&slug={0}'.format(slug))
     data = scraper.get_video_id(scraper.get(url))
-    url = 'plugin://plugin.video.{0}/?action=play_video&videoid={1}'.format(
-        data['provider'], data['id'])
+    if data['provider'] == 'audio':
+        url = data['id']
+    else:
+        url = 'plugin://plugin.video.{0}/?action=play_video&videoid={1}'.format(
+            data['provider'], data['id'])
     plugin.log.info('Playing url: %s' % url)
     plugin.set_resolved_url(url)
 
