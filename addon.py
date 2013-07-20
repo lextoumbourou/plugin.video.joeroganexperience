@@ -20,6 +20,7 @@ def show_podcasts(page_no):
     items = [{
         'label': podcast[0],
         'path': plugin.url_for('play_podcast', slug=podcast[1]),
+        'thumbnail': podcast[2],
         'is_playable': True,
     } for podcast in podcasts]
     items.append(
