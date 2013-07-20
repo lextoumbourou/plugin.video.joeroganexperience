@@ -8,10 +8,7 @@ plugin = Plugin()
 
 @plugin.route('/')
 def main_menu():
-    items = [
-        {'label': 'Podcasts', 'path': plugin.url_for('show_podcasts', page_no=1)}
-    ]
-    return items
+    return plugin.redirect(plugin.url_for('show_podcasts', page_no=1))
 
 @plugin.route('/podcasts/<page_no>')
 def show_podcasts(page_no):
