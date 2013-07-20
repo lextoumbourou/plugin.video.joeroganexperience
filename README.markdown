@@ -1,7 +1,7 @@
 The Joe Rogan Experience Plugin for XBMC
 =======================
 
-Watch The Joe Rogan Experience on XBMC
+Watch The Joe Rogan Experience on XBMC. Supports latest version of Dharma.
 
 ### Setup/Installation
 
