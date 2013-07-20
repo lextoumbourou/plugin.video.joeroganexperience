@@ -1,14 +1,11 @@
 The Joe Rogan Experience XBMC Script
 =======================
-version 0.3.1
 
-### Summary
-
-Watch videos on XBMC from The Joe Rogan Experience USTREAM Channel
+Watch The Joe Rogan Experience on XBMC
 
 ### Setup/Installation
 
-Install through System > Add-ons > Install from zip file > then open the zip file you downloaded 
+The plugin should be installed through the official XBMC addon repository.
 
 ### Contact
 
