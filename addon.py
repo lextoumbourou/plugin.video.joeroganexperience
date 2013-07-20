@@ -10,6 +10,7 @@ plugin = Plugin()
 def main_menu():
     return plugin.redirect(plugin.url_for('show_podcasts', page_no=1))
 
+
 @plugin.route('/podcasts/<page_no>')
 def show_podcasts(page_no):
     url = 'http://podcasts.joerogan.net/podcasts/page/{0}?load'.format(page_no)
@@ -29,15 +30,17 @@ def show_podcasts(page_no):
 
     return items
 
+
 @plugin.route('/podcasts/play/<slug>/')
 def play_podcast(slug):
-    url = (
-        'http://podcasts.joerogan.net/wp-admin/admin-ajax.php?action=loadPermalink&slug={0}'.format(slug))
+    url = ('http://podcasts.joerogan.net/wp-admin/admin-ajax.php'
+           '?action=loadPermalink&slug={0}').format(slug)
     data = scraper.get_video_id(scraper.get(url))
     if data['provider'] == 'audio':
         url = data['id']
     else:
-        url = 'plugin://plugin.video.{0}/?action=play_video&videoid={1}'.format(
+        url = ('plugin://plugin.video.{0}/'
+               '?action=play_video&videoid={1}').format(
             data['provider'], data['id'])
     plugin.log.info('Playing url: %s' % url)
     plugin.set_resolved_url(url)

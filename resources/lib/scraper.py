@@ -12,7 +12,7 @@ def get(url):
     response.close()
 
     return output.decode('ascii', 'ignore')
-    
+
 
 def get_podcasts(html):
     """ Return a list of tuples like (name, url, thumbnail)"""
@@ -29,6 +29,7 @@ def get_podcasts(html):
             (name, slug, thumb))
 
     return output
+
 
 def get_video_id(content):
     """ Return a dictionary containing video information """
