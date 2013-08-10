@@ -3,7 +3,7 @@
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.xbmcswift2" version="2.4.0"/>
-    <import addon="script.module.beautifulsoup" version="3.2.1"/>
+    <import addon="script.module.beautifulsoup" version="3.2.0"/>
     <import addon="plugin.video.youtube" version="4.4.6"/>
     <import addon="plugin.video.vimeo" version="3.5.2"/>
   </requires>
